@@ -1,0 +1,22 @@
+{
+  "name": "pps-final-vue",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace frontend",
+    "dev:backend": "npm run dev --workspace backend",
+    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "typecheck": "npm run typecheck --workspace backend && npm run typecheck --workspace frontend",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "security:sonarqube:up": "docker compose --profile sonar up -d sonarqube-db sonarqube",
+    "security:sonarqube:down": "docker compose --profile sonar down",
+    "security:dependency-check": "docker compose --profile security run --rm dependency-check",
+    "security:zap": "docker compose --profile security run --rm zap"
+  }
+}
+

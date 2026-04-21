@@ -1,0 +1,88 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  dependency-check:
+    image: owasp/dependency-check:latest
+    profiles: ["security"]
+    command:
+      - --scan
+      - /src
+      - --format
+      - HTML
+      - --out
+      - /src/logs/dependency-check
+    volumes:
+      - ./:/src
+      - dependency-check-data:/usr/share/dependency-check/data
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    profiles: ["security"]
+    depends_on:
+      - frontend
+    command:
+      - zap-baseline.py
+      - -t
+      - http://frontend
+      - -r
+      - /zap/wrk/zap-report.html
+      - -J
+      - /zap/wrk/zap-report.json
+    volumes:
+      - ./logs/zap:/zap/wrk
+
+  sonarqube-db:
+    image: postgres:16-alpine
+    profiles: ["sonar"]
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonarqube-db:/var/lib/postgresql/data
+
+  sonarqube:
+    image: sonarqube:community
+    profiles: ["sonar"]
+    depends_on:
+      - sonarqube-db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+
+volumes:
+  dependency-check-data:
+  sonarqube-db:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:
+
