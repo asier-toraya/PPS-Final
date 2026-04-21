@@ -65,9 +65,9 @@ Cumplido con `Supabase Auth + GitHub`.
 
 Evidencias:
 
-- [oauth-github-supa.png](evidencias/oauth-github-supa.png)
-- [oauth.png](evidencias/oauth.png)
-- [login-success.png](evidencias/login-success.png)
+![Configuración de GitHub en Supabase](evidencias/oauth-github-supa.png)
+![Pantalla de OAuth](evidencias/oauth.png)
+![Inicio de sesión correcto](evidencias/login-success.png)
 
 ### Autorización RBAC
 
@@ -82,8 +82,8 @@ Aplicación:
 
 Evidencias:
 
-- [admin-panel.png](evidencias/admin-panel.png)
-- [client-panel.png](evidencias/client-panel.png)
+![Panel de administración](evidencias/admin-panel.png)
+![Panel de cliente](evidencias/client-panel.png)
 
 ### Autorización ABAC
 
@@ -95,10 +95,10 @@ Esta condición no depende solo del rol, sino también de un atributo de negocio
 
 Evidencias:
 
-- [sin-adopcion.png](evidencias/sin-adopcion.png)
-- [con-adopcion.png](evidencias/con-adopcion.png)
-- [oferta-exclusiva.png](evidencias/oferta-exclusiva.png)
-- [is-exclusive.png](evidencias/is-exclusive.png)
+![Cliente sin adopción](evidencias/sin-adopcion.png)
+![Cliente con adopción](evidencias/con-adopcion.png)
+![Oferta exclusiva visible](evidencias/oferta-exclusiva.png)
+![Campo is_exclusive](evidencias/is-exclusive.png)
 
 ### Integración con Supabase
 
@@ -106,8 +106,8 @@ Cumplido para autenticación y persistencia de datos.
 
 Evidencias:
 
-- [oauth-github-supa.png](evidencias/oauth-github-supa.png)
-- [con-adopcion.png](evidencias/con-adopcion.png)
+![OAuth en Supabase](evidencias/oauth-github-supa.png)
+![Estado con adopción](evidencias/con-adopcion.png)
 
 ### Gestión de secretos
 
@@ -115,9 +115,9 @@ Cumplido con variables de entorno, archivos `.env.example` y exclusión de secre
 
 Evidencias:
 
-- [env-frontend.png](evidencias/env-frontend.png)
-- [env-backend.png](evidencias/env-backend.png)
-- [gitignore.png](evidencias/gitignore.png)
+![Variables del frontend](evidencias/env-frontend.png)
+![Variables del backend](evidencias/env-backend.png)
+![Gitignore del proyecto](evidencias/gitignore.png)
 
 ### Despliegue reproducible y cloud
 
@@ -125,19 +125,22 @@ Cumplido con Docker Compose en local y Render en cloud.
 
 Evidencias:
 
-- [render-deploy.png](evidencias/render-deploy.png)
+![Despliegue en Render](evidencias/render-deploy.png)
 
 ### Análisis de seguridad
 
 Cumplido con herramientas separadas:
 
+- SAST: SonarQube
 - DAST: OWASP ZAP
 - análisis de dependencias: OWASP Dependency-Check
 
 Evidencias:
 
-- [zap.png](evidencias/zap.png)
-- [owasp-dependency.png](evidencias/owasp-dependency.png)
+![Resultado de SonarQube 1](evidencias/sonarqube.png)
+![Resultado de SonarQube 2](evidencias/sonarqube-2.png)
+![Resultado de ZAP](evidencias/zap.png)
+![Resultado de Dependency-Check](evidencias/owasp-dependency.png)
 
 ## 5. Resumen de navegación
 
@@ -155,6 +158,6 @@ El proyecto cumple los requisitos obligatorios con una arquitectura pequeña, cl
 ## 7. Documentación adicional
 
 - [README.md](README.md)
-- [guia.md](guia.md)
+- [docs/guia.md](docs/guia.md)
 - [docs/Arquitectura.md](docs/Arquitectura.md)
 - [docs/Seguridad.md](docs/Seguridad.md)
