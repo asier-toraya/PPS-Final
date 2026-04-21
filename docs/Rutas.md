@@ -20,7 +20,7 @@
 
 ### `GET /catalogo`
 
-- Vista: catalogo y ofertas
+- Vista: catálogo y ofertas
 - Acceso: cualquier usuario autenticado
 - Uso: ver ofertas visibles y, si el rol lo permite, crear ofertas
 - RBAC: `sales`, `vet` y `admin` pueden crear ofertas; `client` no
@@ -67,7 +67,7 @@
 ### `GET /api/pets`
 
 - Acceso: autenticado
-- Uso: listar mascotas disponibles para adopcion
+- Uso: listar mascotas disponibles para adopción
 - RBAC: autenticacion obligatoria
 - ABAC: no
 
@@ -88,6 +88,6 @@
 ### `POST /api/admin/adoptions`
 
 - Acceso: `admin`
-- Uso: registrar adopcion
+- Uso: registrar adopción
 - RBAC: si
 - ABAC: crea la relacion que luego activa la regla ABAC

@@ -1,37 +1,37 @@
 # Veterinaria Asier
 
-Veterinaria Asier es un proyecto final pequeno y funcional para una asignatura. La aplicacion cubre tres areas del enunciado de forma minima y clara:
+Veterinaria Asier es un proyecto final pequeño y funcional para una asignatura. La aplicación cubre tres áreas del enunciado de forma mínima y clara:
 
-- venta de articulos
-- adopcion de mascotas
+- venta de artículos
+- adopción de mascotas
 - servicios veterinarios
 
-La base tecnica demuestra autenticacion OAuth 2 con Supabase, autorizacion RBAC por roles, autorizacion ABAC con la regla de adopcion, backend Node.js con TypeScript, frontend Vue 3 con Vite, despliegue reproducible con Docker y despliegue cloud en Render.
+La base técnica demuestra autenticación OAuth 2 con Supabase, autorización RBAC por roles, autorización ABAC con la regla de adopción, backend Node.js con TypeScript, frontend Vue 3 con Vite, despliegue reproducible con Docker y despliegue cloud en Render.
 
 ## Stack
 
 - Frontend: Vue 3 + Vite + TypeScript + CSS simple
 - Backend: Node.js + Express + TypeScript
-- Autenticacion y base de datos: Supabase
+- Autenticación y base de datos: Supabase
 - Contenedores: Docker + Docker Compose
 - Despliegue: Render + Supabase externo
 
-## Funcionalidad minima
+## Funcionalidad mínima
 
 - login con GitHub mediante Supabase Auth
 - roles `admin`, `client`, `vet` y `sales`
-- catalogo de ofertas
-- registro minimo de adopciones
+- catálogo de ofertas
+- registro mínimo de adopciones
 - panel admin para roles y adopciones
-- regla de negocio: un cliente con adopcion puede ver ofertas exclusivas
+- regla de negocio: un cliente con adopción puede ver ofertas exclusivas
 
-## Arranque rapido en local
+## Arranque rápido en local
 
 1. Copiar `.env.example` a `.env`.
 2. Copiar `frontend/.env.example` a `frontend/.env`.
 3. Copiar `backend/.env.example` a `backend/.env`.
 4. Rellenar las variables de Supabase.
-5. Ejecutar el SQL de [supabase/schema.sql](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/supabase/schema.sql:1) en el editor SQL de Supabase.
+5. Ejecutar el SQL de [supabase/schema.sql](supabase/schema.sql) en el editor SQL de Supabase.
 6. Configurar el proveedor GitHub en Supabase y la OAuth App en GitHub.
 7. Lanzar:
 
@@ -47,16 +47,16 @@ docker compose up --build
 
 - OAuth 2 con GitHub mediante Supabase Auth
 - RBAC con `admin`, `client`, `vet` y `sales`
-- ABAC con la regla "cliente con adopcion ve ofertas exclusivas"
-- integracion con Supabase para autenticacion y datos
-- Docker Compose para reproduccion local
+- ABAC con la regla "cliente con adopción ve ofertas exclusivas"
+- integración con Supabase para autenticación y datos
+- Docker Compose para reproducción local
 - despliegue en Render
-- gestion de secretos con variables de entorno
-- integracion minima de SonarQube, OWASP Dependency-Check y OWASP ZAP
+- gestión de secretos con variables de entorno
+- integración mínima de SonarQube, OWASP Dependency-Check y OWASP ZAP
 
-## Scripts utiles
+## Scripts útiles
 
-Desde la raiz del proyecto:
+Desde la raíz del proyecto:
 
 ```bash
 npm run build
@@ -71,19 +71,20 @@ npm run security:zap
 - backend: `Web Service` en Render con `Root Directory = backend`
 - Supabase: servicio externo
 
-La guia paso a paso esta en [guia.md](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/guia.md:1).
+La guía paso a paso está en [docs/guia.md](docs/guia.md).
 
 ## Evidencias
 
-La lista exacta de capturas para la memoria y la defensa esta en [criterios.md](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/criterios.md:1).
+Las capturas y pruebas recopiladas para la memoria están en la carpeta [evidencias](evidencias).
 
-## Documentacion
+## Documentación
 
-- [Arquitectura](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/Arquitectura.md)
-- [Workflow](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/Workflow.md)
-- [Rutas](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/Rutas.md)
-- [Seguridad](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/Seguridad.md)
-- [Modelo de datos](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/ModeloDeDatos.md)
-- [Despliegue](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/Despliegue.md)
-- [DevSecOps](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/DevSecOps.md)
-- [Estructura](/C:/Users/asier/Documents/Ciberseguridad/PPS/PPS%20-%20Final%20-%20Vue/docs/Estructura.md)
+- [Informe](informe.md)
+- [Arquitectura](docs/Arquitectura.md)
+- [Workflow](docs/Workflow.md)
+- [Rutas](docs/Rutas.md)
+- [Seguridad](docs/Seguridad.md)
+- [Modelo de datos](docs/ModeloDeDatos.md)
+- [Despliegue](docs/Despliegue.md)
+- [DevSecOps](docs/DevSecOps.md)
+- [Estructura](docs/Estructura.md)
