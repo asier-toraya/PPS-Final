@@ -47,9 +47,9 @@ services:
       - -t
       - http://frontend
       - -r
-      - /zap/wrk/zap-report.html
+      - zap-report.html
       - -J
-      - /zap/wrk/zap-report.json
+      - zap-report.json
     volumes:
       - ./logs/zap:/zap/wrk
 
@@ -85,4 +85,3 @@ volumes:
   sonarqube-data:
   sonarqube-extensions:
   sonarqube-logs:
-
