@@ -40,6 +40,14 @@ body {
     var(--bg);
 }
 
+ion-app {
+  background:
+    linear-gradient(135deg, rgba(111, 87, 199, 0.07), transparent 22%),
+    radial-gradient(circle at top left, rgba(206, 177, 134, 0.26), transparent 24%),
+    radial-gradient(circle at right, rgba(184, 161, 239, 0.16), transparent 28%),
+    var(--bg);
+}
+
 button,
 input,
 select {
@@ -53,7 +61,12 @@ a {
 
 .page-frame {
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
+  padding:
+    env(safe-area-inset-top, 0)
+    0
+    env(safe-area-inset-bottom, 0);
 }
 
 .page-frame::before {
@@ -401,12 +414,28 @@ a {
 }
 
 @media (max-width: 760px) {
+  .app-shell,
+  .login-view {
+    width: min(100%, calc(100% - 20px));
+    padding: 20px 0 32px;
+  }
+
   .topbar,
   .hero-card-head,
   .section-head,
   .offer-head {
     flex-direction: column;
     align-items: start;
+  }
+
+  .nav-links {
+    width: 100%;
+  }
+
+  .nav-link,
+  .button.ghost {
+    width: 100%;
+    text-align: center;
   }
 
   .hero-panel {

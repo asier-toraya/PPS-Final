@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuth } from "../composables/useAuth";
 
-const { signInWithGitHub } = useAuth();
+const { signInWithGitHub, state } = useAuth();
 </script>
 
 <template>
@@ -16,6 +16,7 @@ const { signInWithGitHub } = useAuth();
       <button class="button primary" type="button" @click="signInWithGitHub">
         Entrar con GitHub
       </button>
+      <p v-if="state.error" class="hero-copy error">{{ state.error }}</p>
     </div>
   </section>
 </template>

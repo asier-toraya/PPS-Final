@@ -11,6 +11,7 @@ La base técnica demuestra autenticación OAuth 2 con Supabase, autorización RB
 ## Stack
 
 - Frontend: Vue 3 + Vite + TypeScript + CSS simple
+- Mobile wrapper: Ionic + Capacitor para Android
 - Backend: Node.js + Express + TypeScript
 - Autenticación y base de datos: Supabase
 - Contenedores: Docker + Docker Compose
@@ -42,6 +43,21 @@ docker compose up --build
 8. Abrir:
    - frontend: `http://localhost:8080`
    - backend: `http://localhost:3000/api/health`
+
+## Android minimo con Capacitor
+
+1. Configurar en `frontend/.env`:
+   - `VITE_API_BASE_URL` con la URL publica del backend
+   - `VITE_WEB_REDIRECT_URL` con la URL publica del frontend web
+   - `VITE_MOBILE_REDIRECT_URL=veterinariaasier://auth/callback`
+2. Configurar en Supabase Auth la redirect URL web y la movil.
+3. Configurar `CORS_ORIGIN` del backend con ambos origenes separados por comas.
+4. Desde `frontend`, ejecutar:
+
+```bash
+npm run build:android
+npm run cap:open:android
+```
 
 ## Requisitos demostrados
 

@@ -17,9 +17,16 @@ function readRequired(key: RequiredKey): string {
   return value;
 }
 
+function readOrigins() {
+  return readRequired("CORS_ORIGIN")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 export const env = {
   port: Number.parseInt(readRequired("PORT"), 10),
-  corsOrigin: readRequired("CORS_ORIGIN"),
+  corsOrigins: readOrigins(),
   supabaseUrl: readRequired("SUPABASE_URL"),
   supabaseAnonKey: readRequired("SUPABASE_ANON_KEY"),
   supabaseServiceRoleKey: readRequired("SUPABASE_SERVICE_ROLE_KEY"),

@@ -17,11 +17,13 @@
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 - `VITE_API_BASE_URL`
+- `VITE_WEB_REDIRECT_URL`
+- `VITE_MOBILE_REDIRECT_URL`
 
 ### Backend
 
 - `PORT`
-- `CORS_ORIGIN`
+- `CORS_ORIGIN` (lista separada por comas)
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
@@ -52,4 +54,5 @@ Tambien se podria desplegar con `frontend/Dockerfile`, pero para este proyecto e
 
 - Supabase permanece externo
 - el callback OAuth debe apuntar al dominio final del frontend
-- `CORS_ORIGIN` del backend debe coincidir con la URL publica del frontend
+- para Android con Capacitor, registrar tambien `veterinariaasier://auth/callback`
+- `CORS_ORIGIN` del backend debe incluir la URL publica del frontend y `http://localhost`

@@ -7,6 +7,7 @@ import { sendError } from "./utils/http.js";
 
 export function createApp() {
   const app = express();
+  const allowedOrigins = new Set(env.corsOrigins);
 
   app.use(
     helmet({
@@ -15,7 +16,14 @@ export function createApp() {
   );
   app.use(
     cors({
-      origin: env.corsOrigin,
+      origin(origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) {
+        if (!origin || allowedOrigins.has(origin)) {
+          callback(null, true);
+          return;
+        }
+
+        callback(new Error(`Origin not allowed: ${origin}`));
+      },
       credentials: false
     })
   );
