@@ -69,6 +69,10 @@ a {
     env(safe-area-inset-bottom, 0);
 }
 
+.page-frame.frontend-mobile {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0) + 96px);
+}
+
 .page-frame::before {
   content: "";
   position: fixed;
@@ -97,9 +101,11 @@ a {
 }
 
 .topbar h1,
+.mobile-topbar h1,
 .hero-panel h1,
 .hero-card h2,
-.panel h2 {
+.panel h2,
+.mobile-login-card h1 {
   margin: 0;
   font-family: "Fraunces", serif;
   font-weight: 700;
@@ -139,6 +145,7 @@ a {
 }
 
 .nav-link,
+.mobile-nav-link,
 .button,
 .input,
 .checkbox {
@@ -189,7 +196,8 @@ a {
 .hero-card,
 .panel,
 .info-card,
-.offer-card {
+.offer-card,
+.mobile-login-card {
   background: var(--surface);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
@@ -200,7 +208,8 @@ a {
 .hero-card::before,
 .panel::before,
 .info-card::before,
-.offer-card::before {
+.offer-card::before,
+.mobile-login-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -260,6 +269,11 @@ a {
   background: rgba(255, 255, 255, 0.72);
   border-color: var(--line);
   color: var(--text);
+}
+
+.compact-button {
+  padding: 10px 14px;
+  font-size: 0.72rem;
 }
 
 .hero-card,
@@ -413,6 +427,157 @@ a {
   color: var(--danger);
 }
 
+.mobile-app-shell {
+  width: min(100%, 100vw);
+  padding: 16px 16px 0;
+}
+
+.mobile-topbar {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.mobile-topbar h1 {
+  font-size: 1.3rem;
+}
+
+.mobile-content-shell {
+  gap: 16px;
+}
+
+.mobile-nav {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(env(safe-area-inset-bottom, 0) + 12px);
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 250, 0.96);
+  box-shadow: 0 18px 40px rgba(30, 32, 58, 0.16);
+  backdrop-filter: blur(14px);
+}
+
+.mobile-nav-link {
+  padding: 12px 10px;
+  text-align: center;
+  border: 1px solid transparent;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.mobile-nav-link.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent-strong);
+}
+
+.mobile-login-view {
+  width: min(100%, calc(100% - 24px));
+  padding-top: 18px;
+}
+
+.mobile-login-card {
+  display: grid;
+  gap: 16px;
+  padding: 26px 22px 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 251, 246, 0.92)),
+    var(--surface);
+}
+
+.mobile-login-card h1 {
+  font-size: clamp(2rem, 8vw, 2.9rem);
+  line-height: 0.96;
+}
+
+.mobile-bullet-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.mobile-dashboard-grid,
+.mobile-stack {
+  gap: 16px;
+}
+
+.mobile-hero-card,
+.mobile-summary-panel,
+.mobile-highlight-panel,
+.mobile-form-panel,
+.mobile-admin-hero,
+.mobile-admin-panel {
+  padding: 20px;
+}
+
+.mobile-card-row,
+.mobile-offer-grid,
+.mobile-form-grid {
+  gap: 12px;
+}
+
+.mobile-card-row,
+.mobile-offer-grid {
+  grid-template-columns: 1fr;
+}
+
+.mobile-section-head {
+  gap: 10px;
+}
+
+.frontend-mobile .hero-card-head,
+.frontend-mobile .section-head,
+.frontend-mobile .offer-head {
+  flex-direction: column;
+  align-items: start;
+}
+
+.frontend-mobile .offer-card,
+.frontend-mobile .info-card,
+.frontend-mobile .panel,
+.frontend-mobile .hero-card,
+.frontend-mobile .mobile-login-card {
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.frontend-mobile .button,
+.frontend-mobile .input,
+.frontend-mobile .checkbox,
+.frontend-mobile .mobile-nav,
+.frontend-mobile .mobile-nav-link {
+  border-radius: 16px;
+}
+
+.frontend-mobile .checkbox {
+  align-items: start;
+}
+
+.frontend-mobile .input {
+  padding: 16px 18px;
+}
+
+.frontend-mobile .button.primary,
+.frontend-mobile .button.ghost {
+  width: 100%;
+  justify-content: center;
+}
+
+.frontend-mobile .mobile-topbar .compact-button {
+  width: auto;
+}
+
 @media (max-width: 760px) {
   .app-shell,
   .login-view {
@@ -445,6 +610,17 @@ a {
 
   .chrome-line {
     background-size: 100% 100%, 120px 2px;
+  }
+}
+
+@media (min-width: 761px) {
+  .page-frame.frontend-mobile::before {
+    opacity: 0.45;
+  }
+
+  .mobile-app-shell {
+    width: min(540px, calc(100% - 24px));
+    margin: 0 auto;
   }
 }
 

@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { watch } from "vue";
+import { computed, watch } from "vue";
 import { IonApp } from "@ionic/vue";
 import { RouterView } from "vue-router";
 import { useRoute, useRouter } from "vue-router";
+import { getFrontendVariant } from "./config/frontend";
 import { useAuth } from "./composables/useAuth";
 
 const { state } = useAuth();
 const route = useRoute();
 const router = useRouter();
+const frameClass = computed(() => `frontend-${getFrontendVariant()}`);
 
 watch(
   () => state.session,
@@ -22,7 +24,7 @@ watch(
 
 <template>
   <IonApp>
-    <div class="page-frame">
+    <div class="page-frame" :class="frameClass">
       <div v-if="state.loading" class="center-state">Preparando sesion...</div>
       <div v-else-if="state.error && state.session" class="center-state error">{{ state.error }}</div>
       <RouterView v-else />

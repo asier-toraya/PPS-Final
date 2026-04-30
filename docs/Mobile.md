@@ -1,249 +1,208 @@
-# Versión móvil
+# Version mobile web
 
 ## Objetivo
 
-La versión móvil de este proyecto no reimplementa la aplicación ni añade funcionalidades nuevas.
-Se ha hecho un port mínimo de la SPA existente para que pueda ejecutarse como app Android usando Ionic y Capacitor, manteniendo la misma lógica de frontend, el mismo backend y la misma integración con Supabase.
+La aplicacion puede desplegarse ahora como dos frontends web distintos:
+
+- una version `web` orientada a escritorio
+- una version `mobile` orientada a navegadores moviles
+
+Ambas comparten autenticacion, logica de negocio, rutas y acceso a backend.
+La diferencia esta en la interfaz y en la redireccion automatica entre las dos URLs publicas.
 
 ## Enfoque aplicado
 
-La base sigue siendo el frontend Vue 3 original.
-Ionic se usa como contenedor ligero en el arranque de la aplicación y Capacitor aporta la capa nativa de Android.
+No se ha duplicado la logica de aplicacion.
+Se ha implementado una sola base de frontend capaz de comportarse como variante `web` o `mobile` segun variables de entorno.
 
 Decisiones principales:
 
-- no se han reescrito las vistas a componentes específicos de Ionic
-- no se ha cambiado la navegación funcional de la aplicación
-- no se ha añadido almacenamiento nativo, modo offline, notificaciones ni nuevas capacidades móviles
-- se ha priorizado que la aplicación actual funcione en Android con el menor cambio posible
+- la deteccion de dispositivo se hace en cliente por `user-agent`
+- la redireccion es automatica en ambos sentidos
+- la variante `web` redirige a la URL `mobile` si detecta movil
+- la variante `mobile` redirige a la URL `web` si detecta escritorio
+- la logica de `auth`, API, router y tipos se comparte
+- la capa visual cambia segun la variante configurada
 
 ## Cambios realizados
 
-### 1. Integración de Ionic y Capacitor
+### 1. Variante de frontend
 
-Se han añadido las dependencias necesarias de:
+Se ha anadido una configuracion de variante en:
 
-- `@ionic/vue`
-- `@ionic/vue-router`
-- `@capacitor/core`
-- `@capacitor/cli`
-- `@capacitor/android`
-- `@capacitor/app`
-- `@capacitor/browser`
+- [frontend/src/config/frontend.ts](../frontend/src/config/frontend.ts)
 
-También se ha creado la configuración de Capacitor en:
+Esa capa resuelve:
 
-- [frontend/capacitor.config.ts](../frontend/capacitor.config.ts)
+- si el frontend actual es `web` o `mobile`
+- cual es la URL publica de la version web
+- cual es la URL publica de la version mobile
+- si el navegador actual debe quedarse o redirigirse a la otra version
 
-Y se ha generado el proyecto nativo Android en:
+### 2. Redireccion automatica entre URLs
 
-- `frontend/android`
+En el arranque de la app se ejecuta una comprobacion previa al montaje:
 
-### 2. Arranque de la app
+- si la build es `web` y el navegador es movil, redirige a `VITE_MOBILE_SITE_URL`
+- si la build es `mobile` y el navegador es escritorio, redirige a `VITE_WEB_SITE_URL`
+- se conservan `pathname`, `search` y `hash`
 
-La app ahora se monta usando `IonicVue` y `IonApp`, pero conserva el router y las vistas existentes.
-Esto permite que la SPA funcione dentro del contenedor nativo sin rediseñar la interfaz.
-
-Archivos relevantes:
+Archivo relevante:
 
 - [frontend/src/main.ts](../frontend/src/main.ts)
-- [frontend/src/App.vue](../frontend/src/App.vue)
 
-### 3. OAuth móvil con Supabase
+### 3. Interfaz mobile dedicada
 
-En web, el login sigue funcionando por redirección normal.
-En móvil, el flujo cambia ligeramente para que funcione dentro de una app:
+La variante `mobile` no se limita a ser responsive.
+Tiene una composicion visual propia para verse mejor en pantallas pequenas:
 
-1. la app solicita a Supabase la URL de login con GitHub
-2. se abre el navegador del sistema con `@capacitor/browser`
-3. tras autenticarse, Supabase redirige a un deep link de la app
-4. la app captura ese deep link con `@capacitor/app`
-5. se intercambia el `code` OAuth por la sesión de Supabase
-
-Este enfoque evita depender del `window.location.origin` dentro de una WebView y es la forma mínima correcta de hacer funcionar el login en Android.
+- cabecera compacta
+- navegacion fija inferior
+- login especifico para movil
+- tarjetas y paneles en columna
+- formularios con espaciado tactil
 
 Archivos relevantes:
 
-- [frontend/src/composables/useAuth.ts](../frontend/src/composables/useAuth.ts)
-- [frontend/src/api/supabase.ts](../frontend/src/api/supabase.ts)
-- [frontend/src/config/platform.ts](../frontend/src/config/platform.ts)
-
-### 4. Deep link Android
-
-Se ha registrado el esquema de retorno:
-
-```text
-veterinariaasier://auth/callback
-```
-
-Ese deep link está declarado en el manifiesto Android para que la app pueda reabrirse tras el login.
-
-Archivo relevante:
-
-- [frontend/android/app/src/main/AndroidManifest.xml](../frontend/android/app/src/main/AndroidManifest.xml)
-
-### 5. Ajustes de estilos mínimos
-
-No se ha rediseñado la interfaz.
-Solo se han añadido ajustes pequeños para mejorar el comportamiento en móvil:
-
-- soporte básico de `safe-area`
-- mejor manejo de ancho en cabecera y navegación
-- altura de viewport más estable en móvil
-
-Archivo relevante:
-
+- [frontend/src/components/AppShell.vue](../frontend/src/components/AppShell.vue)
+- [frontend/src/views/LoginView.vue](../frontend/src/views/LoginView.vue)
+- [frontend/src/views/DashboardView.vue](../frontend/src/views/DashboardView.vue)
+- [frontend/src/views/CatalogView.vue](../frontend/src/views/CatalogView.vue)
+- [frontend/src/views/AdminView.vue](../frontend/src/views/AdminView.vue)
 - [frontend/src/assets/styles.css](../frontend/src/assets/styles.css)
 
-### 6. CORS para web local, web desplegada y móvil
+### 4. Autenticacion y retorno
 
-El backend se ha adaptado para aceptar varios orígenes en `CORS_ORIGIN` en vez de uno solo.
-Esto permite convivir con:
+La autenticacion web sigue compartida.
+Para que cada despliegue vuelva a su propia URL tras el login, el frontend admite:
 
-- frontend local en Vite
-- frontend desplegado en Render
-- uso futuro del contenedor móvil
+- `VITE_AUTH_REDIRECT_URL`
 
-Archivos relevantes:
+Si no se define, se mantiene compatibilidad con:
 
-- [backend/src/app.ts](../backend/src/app.ts)
-- [backend/src/config/env.ts](../backend/src/config/env.ts)
+- `VITE_WEB_REDIRECT_URL`
+
+La autenticacion nativa con Capacitor sigue usando:
+
+- `VITE_MOBILE_REDIRECT_URL`
+
+Archivo relevante:
+
+- [frontend/src/config/platform.ts](../frontend/src/config/platform.ts)
 
 ## Variables de entorno necesarias
 
-### Frontend
-
-El frontend necesita estas variables:
+### Variables comunes de frontend
 
 ```env
+VITE_FRONTEND_VARIANT=web
+VITE_WEB_SITE_URL=https://tu-frontend-web.onrender.com
+VITE_MOBILE_SITE_URL=https://tu-frontend-mobile.onrender.com
 VITE_SUPABASE_URL=https://TU-PROYECTO.supabase.co
 VITE_SUPABASE_ANON_KEY=TU_ANON_KEY
 VITE_API_BASE_URL=https://TU-BACKEND/api
-VITE_WEB_REDIRECT_URL=http://localhost:5173/
+VITE_AUTH_REDIRECT_URL=https://tu-frontend-web.onrender.com/
 VITE_MOBILE_REDIRECT_URL=veterinariaasier://auth/callback
 ```
 
-Notas:
+### Despliegue web
 
-- `VITE_WEB_REDIRECT_URL` se usa para desarrollo web local con Vite
-- `VITE_MOBILE_REDIRECT_URL` se usa para el retorno del login móvil
-- `VITE_API_BASE_URL` debe apuntar a un backend accesible desde el dispositivo o emulador; para móvil es más simple usar el backend desplegado
-
-### Backend
-
-El backend necesita:
+Valores esperados:
 
 ```env
-PORT=3000
-CORS_ORIGIN=http://localhost:5173,https://TU-FRONTEND.onrender.com
-SUPABASE_URL=https://TU-PROYECTO.supabase.co
-SUPABASE_ANON_KEY=TU_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY=TU_SERVICE_ROLE_KEY
-BOOTSTRAP_ADMIN_EMAIL=tu-correo@gmail.com
+VITE_FRONTEND_VARIANT=web
+VITE_WEB_SITE_URL=https://tu-frontend-web.onrender.com
+VITE_MOBILE_SITE_URL=https://tu-frontend-mobile.onrender.com
+VITE_AUTH_REDIRECT_URL=https://tu-frontend-web.onrender.com/
 ```
 
-`CORS_ORIGIN` acepta ahora una lista separada por comas.
+### Despliegue mobile
 
-## Configuración externa necesaria
+Valores esperados:
+
+```env
+VITE_FRONTEND_VARIANT=mobile
+VITE_WEB_SITE_URL=https://tu-frontend-web.onrender.com
+VITE_MOBILE_SITE_URL=https://tu-frontend-mobile.onrender.com
+VITE_AUTH_REDIRECT_URL=https://tu-frontend-mobile.onrender.com/
+```
+
+## Configuracion externa necesaria
 
 ## Supabase
 
-En `Authentication > URL Configuration` deben permitirse tanto la versión web como la móvil.
-
-Valores recomendados:
+En `Authentication > URL Configuration` deben registrarse las dos URLs publicas:
 
 ```text
+https://tu-frontend-web.onrender.com
+https://tu-frontend-web.onrender.com/
+https://tu-frontend-mobile.onrender.com
+https://tu-frontend-mobile.onrender.com/
 http://localhost:5173
 http://localhost:5173/
-https://TU-FRONTEND.onrender.com
-https://TU-FRONTEND.onrender.com/
 veterinariaasier://auth/callback
 ```
 
-La `Site URL` puede ser la URL pública del frontend desplegado, pero los `Redirect URLs` deben incluir también el entorno local y el deep link móvil.
-
 ## GitHub OAuth
 
-La `Authorization callback URL` de GitHub no debe apuntar al frontend ni al deep link.
-Debe seguir siendo la callback de Supabase:
+La `Authorization callback URL` debe seguir apuntando a Supabase:
 
 ```text
 https://TU-PROYECTO.supabase.co/auth/v1/callback
 ```
 
-## Cómo probar la versión móvil
+No debe apuntar ni a la URL web ni a la URL mobile.
 
-### 1. Validación funcional de la base web
+## Render
 
-Primero conviene comprobar que la aplicación sigue funcionando como SPA:
+La idea de despliegue es:
 
-```bash
-npm run dev --workspace frontend
-```
+- un servicio Render para la rama web
+- un servicio Render para la rama mobile
 
-Después:
+Cada uno debe usar la misma base de codigo, pero con variables distintas para:
 
-- abrir `http://localhost:5173`
-- comprobar login
-- comprobar dashboard
-- comprobar catálogo
-- comprobar admin si el usuario tiene ese rol
+- `VITE_FRONTEND_VARIANT`
+- `VITE_AUTH_REDIRECT_URL`
+- `VITE_WEB_SITE_URL`
+- `VITE_MOBILE_SITE_URL`
 
-Esto no es todavía la app móvil, pero confirma que la base funcional sigue correcta.
+## Como probarlo
 
-### 2. Generar y sincronizar Android
+### 1. Probar la variante web
 
-Desde `frontend`:
+Arranca el frontend con variante `web`.
+En escritorio debe quedarse en la URL web.
+Si simulas un navegador movil, debe redirigir a la URL mobile.
 
-```bash
-npm run build:android
-```
+### 2. Probar la variante mobile
 
-Este comando:
+Arranca o despliega el frontend con variante `mobile`.
+En movil debe quedarse en esa URL y mostrar la UI mobile.
+En escritorio debe redirigir a la URL web.
 
-1. compila el frontend
-2. copia `dist` al proyecto Android
-3. sincroniza Capacitor con la plataforma nativa
+### 3. Probar el login
 
-### 3. Abrir el proyecto Android
+Comprobar en ambas variantes:
 
-Desde `frontend`:
+- login con GitHub
+- retorno a la URL correcta de esa variante
+- carga del dashboard
+- acceso a catalogo
+- acceso a admin segun rol
 
-```bash
-npm run cap:open:android
-```
+### 4. Probar rutas internas
 
-Esto abre el proyecto nativo para compilarlo o ejecutarlo con herramientas Android.
+Hay que comprobar que la redireccion conserva la ruta actual:
 
-### 4. Prueba real en Android
+- `/login`
+- `/`
+- `/catalogo`
+- `/admin`
 
-Para probar la app móvil real hace falta al menos:
-
-- JDK 11 o superior
-- Android SDK
-- `adb`
-- dispositivo Android o emulador
-
-Sin eso solo se puede validar la parte web y la generación del wrapper nativo, pero no el comportamiento final como aplicación instalada.
-
-## Estado real de la implementación
-
-La versión móvil actual queda preparada para:
-
-- usar la misma aplicación Vue dentro de Android
-- autenticarse con GitHub mediante Supabase
-- volver a la app con deep link nativo
-- reutilizar el backend y la base de datos ya desplegados
-
-Limitaciones deliberadas de esta versión:
-
-- solo se ha preparado Android
-- no hay versión iOS
-- no hay capacidades nativas avanzadas
-- no hay modo offline
-- no hay rediseño completo de UX móvil
+Y que tambien conserva `search` y `hash` cuando existan.
 
 ## Resumen
 
-La implementación móvil es un wrapper nativo mínimo y pragmático.
-La aplicación sigue siendo la misma SPA, pero ahora puede empaquetarse como app Android con un flujo de autenticación compatible con móvil y sin introducir complejidad innecesaria.
+La version mobile web ya no depende solo de CSS responsive.
+Ahora existe una variante de frontend especifica para movil, con su propia UI y su propia URL de despliegue, pero compartiendo la logica central con la version de escritorio.

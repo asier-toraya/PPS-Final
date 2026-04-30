@@ -3,10 +3,12 @@ import { onMounted, reactive, watch } from "vue";
 import { apiFetch } from "../api/http";
 import AppShell from "../components/AppShell.vue";
 import OfferCard from "../components/OfferCard.vue";
+import { isMobileFrontendVariant } from "../config/frontend";
 import { useAuth } from "../composables/useAuth";
 import type { OfferResponse, OfferDomain } from "../types/app";
 
 const { state, refreshProfile } = useAuth();
+const isMobileFrontend = isMobileFrontendVariant();
 
 const catalog = reactive<{
   loading: boolean;
@@ -74,15 +76,15 @@ onMounted(loadCatalog);
 
 <template>
   <AppShell>
-    <section class="stack">
-      <article class="panel highlight" v-if="catalog.payload && !catalog.payload.access.canAccessExclusiveOffers">
+    <section class="stack" :class="{ 'mobile-stack': isMobileFrontend }">
+      <article class="panel highlight" :class="{ 'mobile-highlight-panel': isMobileFrontend }" v-if="catalog.payload && !catalog.payload.access.canAccessExclusiveOffers">
         <p class="eyebrow">Ofertas especiales</p>
         <h2>Acceso limitado</h2>
         <p>{{ catalog.payload.access.reason }}</p>
       </article>
 
-      <article class="panel" v-if="state.profile && (state.profile.permissions.canCreateStoreOffers || state.profile.permissions.canCreateServiceOffers)">
-        <div class="section-head">
+      <article class="panel" :class="{ 'mobile-form-panel': isMobileFrontend }" v-if="state.profile && (state.profile.permissions.canCreateStoreOffers || state.profile.permissions.canCreateServiceOffers)">
+        <div class="section-head" :class="{ 'mobile-section-head': isMobileFrontend }">
           <div>
             <p class="eyebrow">Gestion</p>
             <h2>Nueva oferta</h2>
@@ -90,7 +92,7 @@ onMounted(loadCatalog);
           <span class="badge neutral">Personal autorizado</span>
         </div>
 
-        <form class="form-grid" @submit.prevent="createOffer">
+        <form class="form-grid" :class="{ 'mobile-form-grid': isMobileFrontend }" @submit.prevent="createOffer">
           <input v-model="form.title" class="input" type="text" placeholder="Titulo" />
           <input v-model="form.description" class="input" type="text" placeholder="Descripcion breve" />
           <select v-model="form.domain" class="input">
@@ -118,7 +120,7 @@ onMounted(loadCatalog);
       <p v-if="catalog.loading" class="state-text">Cargando ofertas...</p>
       <p v-else-if="catalog.error" class="state-text error">{{ catalog.error }}</p>
 
-      <section v-else class="offer-grid">
+      <section v-else class="offer-grid" :class="{ 'mobile-offer-grid': isMobileFrontend }">
         <OfferCard
           v-for="offer in catalog.payload?.items ?? []"
           :key="offer.id"

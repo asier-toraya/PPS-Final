@@ -2,7 +2,10 @@
 import { onMounted, reactive } from "vue";
 import { apiFetch } from "../api/http";
 import AppShell from "../components/AppShell.vue";
+import { isMobileFrontendVariant } from "../config/frontend";
 import type { AdminSummary, UserRole } from "../types/app";
+
+const isMobileFrontend = isMobileFrontendVariant();
 
 const admin = reactive<{
   loading: boolean;
@@ -77,8 +80,8 @@ onMounted(loadSummary);
 
 <template>
   <AppShell>
-    <section class="stack">
-      <article class="panel">
+    <section class="stack" :class="{ 'mobile-stack': isMobileFrontend }">
+      <article class="panel" :class="{ 'mobile-admin-hero': isMobileFrontend }">
         <p class="eyebrow">Administracion</p>
         <h2>Roles y adopciones</h2>
         <p class="muted">
@@ -90,9 +93,9 @@ onMounted(loadSummary);
       <p v-else-if="admin.error" class="state-text error">{{ admin.error }}</p>
 
       <template v-else-if="admin.summary">
-        <article class="panel">
+        <article class="panel" :class="{ 'mobile-admin-panel': isMobileFrontend }">
           <h3>Asignar rol</h3>
-          <div class="form-grid">
+          <div class="form-grid" :class="{ 'mobile-form-grid': isMobileFrontend }">
             <select v-model="admin.selectedUserId" class="input">
               <option value="">Selecciona usuario</option>
               <option v-for="profile in admin.summary.profiles" :key="profile.id" :value="profile.id">
@@ -109,9 +112,9 @@ onMounted(loadSummary);
           </div>
         </article>
 
-        <article class="panel">
+        <article class="panel" :class="{ 'mobile-admin-panel': isMobileFrontend }">
           <h3>Registrar adopcion</h3>
-          <div class="form-grid">
+          <div class="form-grid" :class="{ 'mobile-form-grid': isMobileFrontend }">
             <select v-model="admin.adoptionClientId" class="input">
               <option value="">Selecciona cliente</option>
               <option

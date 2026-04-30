@@ -3,9 +3,11 @@ import { computed } from "vue";
 import AppShell from "../components/AppShell.vue";
 import InfoCard from "../components/InfoCard.vue";
 import RoleBadge from "../components/RoleBadge.vue";
+import { isMobileFrontendVariant } from "../config/frontend";
 import { useAuth } from "../composables/useAuth";
 
 const { state } = useAuth();
+const isMobileFrontend = isMobileFrontendVariant();
 
 const adoptionStatus = computed(() =>
   (state.profile?.adoptedPetCount ?? 0) > 0 ? "Con adopcion registrada" : "Sin adopcion registrada"
@@ -14,8 +16,8 @@ const adoptionStatus = computed(() =>
 
 <template>
   <AppShell>
-    <section class="dashboard-grid" v-if="state.profile">
-      <article class="hero-card">
+    <section class="dashboard-grid" :class="{ 'mobile-dashboard-grid': isMobileFrontend }" v-if="state.profile">
+      <article class="hero-card" :class="{ 'mobile-hero-card': isMobileFrontend }">
         <div class="hero-card-head">
           <div>
             <p class="eyebrow">Tu area</p>
@@ -29,13 +31,13 @@ const adoptionStatus = computed(() =>
         </p>
       </article>
 
-      <div class="card-row">
+      <div class="card-row" :class="{ 'mobile-card-row': isMobileFrontend }">
         <InfoCard title="Rol activo" :value="state.profile.profile.role" tone="accent" />
         <InfoCard title="Adopciones" :value="String(state.profile.adoptedPetCount)" />
         <InfoCard title="Estado de cliente" :value="adoptionStatus" />
       </div>
 
-      <article class="panel">
+      <article class="panel" :class="{ 'mobile-summary-panel': isMobileFrontend }">
         <h3>Resumen</h3>
         <ul class="clean-list">
           <li>Revisa tu acceso actual a tienda y servicios.</li>

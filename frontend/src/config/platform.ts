@@ -7,7 +7,7 @@ export function isNativePlatform() {
 }
 
 export function getWebRedirectUrl() {
-  return import.meta.env.VITE_WEB_REDIRECT_URL || `${window.location.origin}/`;
+  return import.meta.env.VITE_AUTH_REDIRECT_URL || import.meta.env.VITE_WEB_REDIRECT_URL || `${window.location.origin}/`;
 }
 
 export function getMobileRedirectUrl() {

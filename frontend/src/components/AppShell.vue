@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
+import { isMobileFrontendVariant } from "../config/frontend";
 import { useAuth } from "../composables/useAuth";
 
 const route = useRoute();
 const { state, signOut } = useAuth();
+const isMobileFrontend = isMobileFrontendVariant();
 
 const links = computed(() => {
   const items = [
@@ -21,31 +23,59 @@ const links = computed(() => {
 </script>
 
 <template>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">Clinica veterinaria</p>
-        <h1>Veterinaria Asier</h1>
-      </div>
+  <div class="app-shell" :class="{ 'mobile-app-shell': isMobileFrontend }">
+    <template v-if="isMobileFrontend">
+      <header class="mobile-topbar">
+        <div>
+          <p class="eyebrow">Clinica veterinaria</p>
+          <h1>Veterinaria Asier</h1>
+        </div>
+        <button class="button ghost compact-button" type="button" @click="signOut">Salir</button>
+      </header>
 
-      <nav class="nav-links">
+      <main class="content-shell mobile-content-shell">
+        <slot />
+      </main>
+
+      <nav class="mobile-nav">
         <RouterLink
           v-for="link in links"
           :key="link.to"
           :to="link.to"
-          class="nav-link"
+          class="mobile-nav-link"
           :class="{ active: route.path === link.to }"
         >
           {{ link.label }}
         </RouterLink>
-        <button class="button ghost" type="button" @click="signOut">Salir</button>
       </nav>
-    </header>
+    </template>
 
-    <div class="chrome-line" aria-hidden="true"></div>
+    <template v-else>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Clinica veterinaria</p>
+          <h1>Veterinaria Asier</h1>
+        </div>
 
-    <main class="content-shell">
-      <slot />
-    </main>
+        <nav class="nav-links">
+          <RouterLink
+            v-for="link in links"
+            :key="link.to"
+            :to="link.to"
+            class="nav-link"
+            :class="{ active: route.path === link.to }"
+          >
+            {{ link.label }}
+          </RouterLink>
+          <button class="button ghost" type="button" @click="signOut">Salir</button>
+        </nav>
+      </header>
+
+      <div class="chrome-line" aria-hidden="true"></div>
+
+      <main class="content-shell">
+        <slot />
+      </main>
+    </template>
   </div>
 </template>
